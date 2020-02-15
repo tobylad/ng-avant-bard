@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1, 
+  "version": 1,
   "newProjectRoot": "projects",
   "projects": {
     "avant-bard": {
@@ -145,6 +145,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "avant-bard"
+    }
+  },
+  "defaultProject": "avant-bard",
+  "cli": {
+    "analytics": "f77166d1-cf93-4154-a85f-2067b7224448"
+  }
 }
