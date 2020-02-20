@@ -1,0 +1,36 @@
+<!-- Category Cards -->
+<div class="row">
+    <div 
+        class="col-lg-3 col-12"
+        *ngFor="let category of categories"
+    >
+        <category-card 
+            categoryName={{category}}
+            (click)="setCategory(category)"
+        >
+        </category-card>
+    </div>
+</div>
+
+<!-- Search bar -->
+<div class="row">
+    <div class="col-lg-4 offset-lg-4 col-10 offset-2 input">
+        <mat-form-field>
+            <input 
+                matInput 
+                (input)="setSearchText($event)"
+            >
+        </mat-form-field>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-4 offset-lg-4 col-10 offset-2 search-button">
+        <button 
+            mat-button 
+            (click)="search()"
+        >
+            Search!
+        </button>
+    </div>
+</div>
