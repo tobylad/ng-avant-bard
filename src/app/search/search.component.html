@@ -7,30 +7,42 @@
         <category-card 
             categoryName={{category}}
             (click)="setCategory(category)"
+            [isActive]="category === activeCategory"
         >
         </category-card>
     </div>
 </div>
 
 <!-- Search bar -->
-<div class="row">
-    <div class="col-lg-4 offset-lg-4 col-10 offset-2 input">
-        <mat-form-field>
-            <input 
-                matInput 
-                (input)="setSearchText($event)"
-            >
-        </mat-form-field>
+<ng-container
+    *ngIf="activeCategory; else noCategory"
+>
+    <div class="row">
+        <div class="col-lg-4 offset-lg-4 col-10 offset-2 input">
+            <mat-form-field>
+                <input 
+                    matInput 
+                    (input)="setSearchText($event)"
+                >
+            </mat-form-field>
+        </div>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-lg-4 offset-lg-4 col-10 offset-2 search-button">
-        <button 
-            mat-button 
-            (click)="search()"
-        >
-            Search!
-        </button>
+    <div>
+        <div class="col-lg-4 offset-lg-4 col-10 offset-2 search-button">
+            <button 
+                mat-button 
+                (click)="search()"
+            >
+                Search!
+            </button>
+        </div>
     </div>
-</div>
+</ng-container>
+
+<!-- Ng-templates -->
+<ng-template #noCategory>
+    <div class="col-lg-4 offset-lg-4 col-10 offset-2 search-button">
+       Choose a category!
+    </div>
+</ng-template>

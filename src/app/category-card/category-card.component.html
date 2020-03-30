@@ -1,5 +1,8 @@
 <mat-card class="category-card">
-    <button mat-button class="category-button">
+    <button mat-button 
+        class="category-button"
+        [ngClass]="{'category-button--active' : isActive}"
+    >
         <mat-card-title>{{categoryName}}</mat-card-title>
     </button>
 </mat-card>
