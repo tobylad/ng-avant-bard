@@ -40,6 +40,13 @@
     </div>
 </ng-container>
 
+<div *ngIf="results">
+    <ul *ngFor="let result of results">
+        <li>{{result.word}}</li>
+    </ul>
+</div>
+
+
 <!-- Ng-templates -->
 <ng-template #noCategory>
     <div class="col-lg-4 offset-lg-4 col-10 offset-2 search-button">

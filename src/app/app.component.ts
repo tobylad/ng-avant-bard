@@ -8,7 +8,7 @@ import {OverlayContainer} from '@angular/cdk/overlay';
 })
 export class AppComponent {
 	constructor(
-	overlayContainer: OverlayContainer
+		overlayContainer: OverlayContainer
 	) {
 		overlayContainer.getContainerElement().classList.add("avant-bard-theme");
 	}
