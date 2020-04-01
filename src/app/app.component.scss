@@ -10,5 +10,10 @@
             font-family: "Montserrat", sans-serif;
             font-size: 48px;
         }
+
+        h1:hover {
+            cursor: pointer;
+            text-decoration: underline;
+        }
     }
 }

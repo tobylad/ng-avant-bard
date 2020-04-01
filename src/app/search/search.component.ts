@@ -16,7 +16,6 @@ export class SearchComponent implements OnInit {
 		"Homophones"
 	];
 
-
 	constructor() { }
 
 	ngOnInit(): void {
@@ -27,24 +26,47 @@ export class SearchComponent implements OnInit {
 	}
 
 	public setSearchText(event): void {
+		// Move into behavior subject
 		this.searchValue = event.target.value;
 	}
 
-	public search(): void {
+	public async search(): Promise<void> {
 		if (this.activeCategory && this.searchValue) {
-			console.log(`Now searching for '${this.searchValue}' in ${this.activeCategory}`)
-
-
-			fetch(`https://api.datamuse.com/words?ml=${this.searchValue}`)
-				.then((response) => {
-					return response.json();
-				})
-				.then((data) => {
-					console.log(data);
-					this.results = data;
-				});
+			const queryString = this.setQuery();
+			const datamuseAPIResults = await fetch(`https://api.datamuse.com/words?rel_${queryString}`);
+			const resultsJSON = await datamuseAPIResults.json();
+			this.results = resultsJSON;
 		}
 	}
 
+	private setQuery(): string {
+		const categoryFetchMap = {
+			"Synonyms": "syn",
+			"Antonyms": "ant",
+			"Rhymes": "rhy",
+			"Homophones": "hom"
+		}
 
+		return categoryFetchMap[this.activeCategory] + "=" + this.searchValue;
+	}
+
+
+
+
+
+
+	// Current state (stored in behavior subject)
+	// {
+	// 	activeCategory: "Synonym",
+	// 	searchValue: "Word",
+	// 	results: ["result", "result"]
+	// }
+
+	// To change results:
+	
+	// Make API call
+	// Set results variable
+	// const currentState = behaviorSubject.value;
+	// const newState = { ...currentState, results: results };
+	// behaviorSubject.next(newState)
 }

@@ -12,4 +12,8 @@ export class AppComponent {
 	) {
 		overlayContainer.getContainerElement().classList.add("avant-bard-theme");
 	}
+
+	public refreshWindow(): void {
+		window.location.reload();
+	}
 }
