@@ -23,11 +23,12 @@ export class SearchComponent implements OnInit {
 
 	public setCategory(category): void {
 		this.activeCategory = category;
+		this.results = [];
+		this.searchValue = "";
 	}
 
-	public setSearchText(event): void {
-		// Move into behavior subject
-		this.searchValue = event.target.value;
+	public setSearchText($event): void {
+		this.searchValue = $event.target.value;
 	}
 
 	public async search(): Promise<void> {

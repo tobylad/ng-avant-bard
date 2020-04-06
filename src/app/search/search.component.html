@@ -23,6 +23,7 @@
                 <input 
                     matInput 
                     (input)="setSearchText($event)"
+                    [value]="searchValue"
                 >
             </mat-form-field>
         </div>
@@ -40,13 +41,21 @@
     </div>
 </ng-container>
 
-<div *ngIf="results">
-<p>{{activeCategory}} of {{searchValue}}</p>
+<ng-container *ngIf="results?.length">
+<h2>{{activeCategory}} of <strong>{{searchValue}}</strong></h2>
 
-    <ul *ngFor="let result of results">
-        <li>{{result.word}}</li>
-    </ul>
-</div>
+    <mat-grid-list 
+        cols="4"
+        rowHeight="50px"
+    >
+        <mat-grid-tile
+            *ngFor="let result of results"
+        >
+            {{ result.word }}
+        </mat-grid-tile>
+
+    </mat-grid-list>
+</ng-container>
 
 
 <!-- Ng-templates -->
