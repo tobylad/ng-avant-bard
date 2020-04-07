@@ -9,6 +9,7 @@ export class SearchComponent implements OnInit {
 	public activeCategory: string;
 	public searchValue: string;
 	public results: any[];
+	public noMatches: boolean;
 	public categories: string[] = [
 		"Synonyms",
 		"Antonyms",
@@ -25,9 +26,11 @@ export class SearchComponent implements OnInit {
 		this.activeCategory = category;
 		this.results = [];
 		this.searchValue = "";
+		this.noMatches = false;
 	}
 
 	public setSearchText($event): void {
+		this.noMatches = false;
 		this.searchValue = $event.target.value;
 	}
 
@@ -37,6 +40,10 @@ export class SearchComponent implements OnInit {
 			const datamuseAPIResults = await fetch(`https://api.datamuse.com/words?rel_${queryString}`);
 			const resultsJSON = await datamuseAPIResults.json();
 			this.results = resultsJSON;
+
+			if (!this.results.length) {
+				this.noMatches = true;
+			}
 		}
 	}
 

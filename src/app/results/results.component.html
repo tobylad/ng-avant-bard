@@ -1,0 +1,11 @@
+<mat-grid-list 
+    cols="4"
+    rowHeight="50px"
+>
+    <mat-grid-tile
+        *ngFor="let result of items"
+    >
+        {{ result.word }}
+    </mat-grid-tile>
+
+</mat-grid-list>
