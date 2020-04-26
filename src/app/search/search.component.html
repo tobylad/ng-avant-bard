@@ -7,7 +7,7 @@
         <category-card 
             categoryName={{category}}
             (click)="setCategory(category)"
-            [isActive]="category === activeCategory"
+            [isActive]="category === state$.value.activeCategory"
         >
         </category-card>
     </div>
@@ -15,7 +15,7 @@
 
 <!-- Search bar -->
 <ng-container
-    *ngIf="activeCategory; else noCategory"
+    *ngIf="state$.value.activeCategory; else noCategory"
 >
     <div class="row">
         <div class="col-lg-4 offset-lg-4 col-10 offset-2 input">
@@ -23,7 +23,7 @@
                 <input 
                     matInput 
                     (input)="setSearchText($event)"
-                    [value]="searchValue"
+                    [value]="state$.value.searchValue"
                 >
             </mat-form-field>
         </div>
@@ -41,12 +41,12 @@
     </div>
 </ng-container>
 
-<ng-container *ngIf="results?.length">
-    <h2>{{activeCategory}} of <strong>{{searchValue}}</strong></h2>
-    <results [items]="results"></results>
+<ng-container *ngIf="state$.value.results?.length">
+    <h2>{{state$.value.activeCategory}} of <strong>{{state$.value.searchValue}}</strong></h2>
+    <results [items]="state$.value.results"></results>
 </ng-container>
 
-<ng-container *ngIf="!results?.length && noMatches">
+<ng-container *ngIf="!state$.value.results?.length && noMatches">
     <div class="col-lg-4 offset-lg-4 col-10 offset-2 search-button no-results">
         There were no results for that word!  Try another one!
      </div>
