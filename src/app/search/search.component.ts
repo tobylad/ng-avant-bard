@@ -4,11 +4,11 @@ import { map, startWith } from 'rxjs/operators';
 import { FormControl } from "@angular/forms";
 
 interface ISearch {
-  activeCategory: string;
-  searchValue: string;
-  results: any[];
-  autocompleteOptions: string[];
-  filteredAutocompleteOptions: Observable<string[]>;
+	activeCategory: string;
+	searchValue: string;
+	results: any[];
+	autocompleteOptions: string[];
+	filteredAutocompleteOptions: Observable<string[]>;
 }
 
 @Component({
@@ -54,7 +54,7 @@ export class SearchComponent implements OnInit {
 	public setSearchText($event): void {
 		this.noMatches = false;
     	this.set("searchValue", $event.target.value);
-      this.setAutocompleteOptions();
+      	this.setAutocompleteOptions();
 	}
 
 	public async search(): Promise<void> {
@@ -96,12 +96,12 @@ export class SearchComponent implements OnInit {
 	private async setAutocompleteOptions() {
 		const searchValue = this.get("searchValue");
 		const datamuseAPIResults = await fetch(`https://api.datamuse.com/sug?s=${searchValue}`);
-    const resultsJSON = await datamuseAPIResults.json();
-    const options = resultsJSON.map((result) => {
-      return result.word;
-    });
-    this.set("autocompleteOptions", options);
-    console.log("%coptions", "color: papayawhip; font-size: 14px;", this.get("autocompleteOptions"))
+		const resultsJSON = await datamuseAPIResults.json();
+		const options = resultsJSON.map((result) => {
+			return result.word;
+		});
+		this.set("autocompleteOptions", options);
+		console.log("%coptions", "color: papayawhip; font-size: 14px;", this.get("autocompleteOptions"))
 	}
 
 	private addAutocompleteFilter() {
