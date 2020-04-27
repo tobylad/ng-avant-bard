@@ -1,10 +1,10 @@
 <!-- Category Cards -->
 <div class="row">
-    <div 
+    <div
         class="col-lg-3 col-12"
         *ngFor="let category of categories"
     >
-        <category-card 
+        <category-card
             categoryName={{category}}
             (click)="setCategory(category)"
             [isActive]="category === state$.value.activeCategory"
@@ -20,19 +20,28 @@
     <div class="row">
         <div class="col-lg-4 offset-lg-4 col-10 offset-2 input">
             <mat-form-field>
-                <input 
-                    matInput 
+                <input
+                    matInput
                     (input)="setSearchText($event)"
                     [value]="state$.value.searchValue"
+                    [formControl]="searchControl"
+                    [matAutocomplete]="auto"
                 >
+
+                <mat-autocomplete #auto="matAutocomplete">
+                  <mat-option *ngFor="let option of this.state$.value.autocompleteOptions" [value]="option">
+                      {{option}}
+                  </mat-option>
+                </mat-autocomplete>
+
             </mat-form-field>
         </div>
     </div>
 
     <div>
         <div class="col-lg-4 offset-lg-4 col-10 offset-2 search-button">
-            <button 
-                mat-button 
+            <button
+                mat-button
                 (click)="search()"
             >
                 Search!
