@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
-import { FormControl } from "@angular/forms";
+import { BehaviorSubject } from 'rxjs';
 
 interface ISearch {
 	activeCategory: string;
 	searchValue: string;
 	results: any[];
-	autocompleteOptions: string[];
-	filteredAutocompleteOptions: Observable<string[]>;
+    autocompleteOptions: string[];
+    noMatches: boolean;
 }
 
 @Component({
@@ -22,13 +20,11 @@ export class SearchComponent implements OnInit {
 		activeCategory: "",
 		searchValue: "",
 		results: [],
-		autocompleteOptions: [],
-		filteredAutocompleteOptions: new Observable<string[]>()
+        autocompleteOptions: [],
+        noMatches: false
 	}
 
-	public searchControl: FormControl = new FormControl();
 	public state$: BehaviorSubject<ISearch> = new BehaviorSubject<ISearch>(this.defaultValues);
-	public noMatches: boolean;
 	public categories: string[] = [
 		"Synonyms",
 		"Antonyms",
@@ -41,18 +37,17 @@ export class SearchComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.addSearchOnEnter();
-		// this.addAutocompleteFilter();
 	}
 
 	public setCategory(category): void {
 		this.set("activeCategory", category);
 		this.set("searchValue", "");
 		this.set("results", []);
-		this.noMatches = false;
+        this.set("noMatches", false)
 	}
 
 	public setSearchText($event): void {
-		this.noMatches = false;
+		this.set("noMatches", false);
     	this.set("searchValue", $event.target.value);
       	this.setAutocompleteOptions();
 	}
@@ -65,7 +60,7 @@ export class SearchComponent implements OnInit {
 			this.set("results", resultsJSON);
 
 			if (!this.get("results").length) {
-				this.noMatches = true;
+				this.set("noMatches", true);
 			}
 		}
 	}
@@ -99,20 +94,13 @@ export class SearchComponent implements OnInit {
 		const resultsJSON = await datamuseAPIResults.json();
 		const options = resultsJSON.map((result) => {
 			return result.word;
-		});
-		this.set("autocompleteOptions", options);
-		console.log("%coptions", "color: papayawhip; font-size: 14px;", this.get("autocompleteOptions"))
-	}
+        });
+        const filteredOptions = options.filter((option) => {
+            return option.includes(searchValue);
+        });
 
-	private addAutocompleteFilter() {
-		const changes = this.searchControl.valueChanges
-			.pipe(
-				startWith(""),
-				map(value => this._filter(value))
-			);
-
-		this.set("filteredAutocompleteOptions", changes);
-	}
+        this.set("autocompleteOptions", filteredOptions);
+    }
 
 	private get(property) {
 		return this.state$.value[property];
@@ -122,10 +110,5 @@ export class SearchComponent implements OnInit {
 		const currentState = this.state$.value;
 		const newState = { ...currentState, [property]: value };
 		this.state$.next(newState);
-	}
-
-	private _filter(value: string): string[] {
-		const options = this.get("autocompleteOptions");
-		return options.filter(option => option.includes(value));
 	}
 }

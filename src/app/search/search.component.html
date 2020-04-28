@@ -24,14 +24,16 @@
                     matInput
                     (input)="setSearchText($event)"
                     [value]="state$.value.searchValue"
-                    [formControl]="searchControl"
                     [matAutocomplete]="auto"
                 >
 
+                
                 <mat-autocomplete #auto="matAutocomplete">
-                  <mat-option *ngFor="let option of this.state$.value.autocompleteOptions" [value]="option">
-                      {{option}}
-                  </mat-option>
+                    <ng-container *ngIf="state$.value.searchValue.length">
+                        <mat-option *ngFor="let option of state$.value.autocompleteOptions" [value]="option">
+                            {{option}}
+                        </mat-option>
+                    </ng-container>
                 </mat-autocomplete>
 
             </mat-form-field>
@@ -55,7 +57,7 @@
     <results [items]="state$.value.results"></results>
 </ng-container>
 
-<ng-container *ngIf="!state$.value.results?.length && noMatches">
+<ng-container *ngIf="!state$.value.results?.length && state$.value.noMatches">
     <div class="col-lg-4 offset-lg-4 col-10 offset-2 search-button no-results">
         There were no results for that word!  Try another one!
      </div>
