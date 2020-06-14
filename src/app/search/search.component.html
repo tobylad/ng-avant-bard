@@ -7,7 +7,7 @@
         <category-card
             categoryName={{category}}
             (click)="setCategory(category)"
-            [isActive]="category === state$.value.activeCategory"
+            [isActive]="category === (category$ | async)"
         >
         </category-card>
     </div>
@@ -15,7 +15,7 @@
 
 <!-- Search bar -->
 <ng-container
-    *ngIf="state$.value.activeCategory; else noCategory"
+    *ngIf="category$ | async; else noCategory"
 >
     <div class="row">
         <div class="col-lg-4 offset-lg-4 col-10 offset-2 input">
@@ -23,14 +23,14 @@
                 <input
                     matInput
                     (input)="setSearchText($event)"
-                    [value]="state$.value.searchValue"
+                    [value]="searchValue$ | async"
                     [matAutocomplete]="auto"
                 >
                 
                 <mat-autocomplete #auto="matAutocomplete">
-                    <ng-container *ngIf="state$.value.searchValue.length">
-                        <mat-option *ngFor="let option of state$.value.autocompleteOptions" [value]="option">
-                            {{option}}
+                    <ng-container *ngIf="searchValue$">
+                        <mat-option *ngFor="let word of autocompleteWords$ | async" [value]="word">
+                            {{ word }}
                         </mat-option>
                     </ng-container>
                 </mat-autocomplete>
@@ -51,12 +51,12 @@
     </div>
 </ng-container>
 
-<ng-container *ngIf="state$.value.results?.length">
-    <h2>{{state$.value.activeCategory}} of <strong>{{state$.value.searchValue}}</strong></h2>
-    <results [items]="state$.value.results"></results>
+<ng-container *ngIf="searchedValue">
+    <h2>{{ searchedCategory }} of <strong>{{ searchedValue }}</strong></h2>
+    <results [items]="results$ | async"></results>
 </ng-container>
 
-<ng-container *ngIf="!state$.value.results?.length && state$.value.noMatches">
+<ng-container *ngIf="noMatches">
     <div class="col-lg-4 offset-lg-4 col-10 offset-2 search-button no-results">
         There were no results for that word!  Try another one!
      </div>
