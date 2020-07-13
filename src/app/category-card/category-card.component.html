@@ -1,7 +1,7 @@
 <mat-card class="category-card">
-    <button mat-button 
+    <button mat-raised-button
         class="category-button"
-        [ngClass]="{'category-button--active' : isActive}"
+        [ngClass]="{'mat-primary' : isActive, 'mat-secondary' : !isActive }"
     >
         <mat-card-title>{{categoryName}}</mat-card-title>
     </button>

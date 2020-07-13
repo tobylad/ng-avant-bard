@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { debounceTime, first, tap } from 'rxjs/operators';
 
 @Component({
 	selector: 'search',
@@ -12,16 +12,14 @@ export class SearchComponent implements OnInit {
 	public searchedValue: string = "";
 	public searchedCategory: string = "";
 	public noMatches: boolean = false;
+	public showAutoComplete: boolean = true;
 	
 	public categorySubject$: BehaviorSubject<string> = new BehaviorSubject<string>("");
 	public category$: Observable<string> = this.categorySubject$.asObservable();
-
 	public searchValueSubject$: BehaviorSubject<string> = new BehaviorSubject<string>("");
 	public searchValue$: Observable<string> = this.searchValueSubject$.asObservable();
-
 	public resultsSubject$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	public results$: Observable<string[]> = this.resultsSubject$.asObservable();
-
 	public autocompleteWordsSubject$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 	public autocompleteWords$: Observable<string[]> = this.autocompleteWordsSubject$.asObservable();
 
@@ -90,20 +88,26 @@ export class SearchComponent implements OnInit {
 	private addSearchOnEnter() {
 		document.addEventListener("keyup", ($e) => {
 			if (!!this.category$ && !!this.searchValue$ && $e.keyCode === 13) {
+				this.showAutoComplete = false;
 				this.search();
 			}
 		});
 	}
 
 	private async setAutocompleteOptions() {
-		const searchValue = await this.searchValue$.pipe(first()).toPromise();
+		const searchValue = await this.searchValue$.pipe(
+			tap(() => this.showAutoComplete = true),
+			debounceTime(500),
+			first(),
+		).toPromise();
+
 		const datamuseAPIResults = await fetch(`https://api.datamuse.com/sug?s=${searchValue}`);
 		const autocompleteResultsJSON = await datamuseAPIResults.json();
 		const options = autocompleteResultsJSON.map((result) => {
 			return result.word;
         });
         const filteredOptions = options.filter((option) => {
-            return option.includes(searchValue);
+            return !!searchValue && option.includes(searchValue);
 		});
 		
 		this.autocompleteWordsSubject$.next(filteredOptions);

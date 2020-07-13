@@ -28,7 +28,7 @@
                 >
                 
                 <mat-autocomplete #auto="matAutocomplete">
-                    <ng-container *ngIf="searchValue$">
+                    <ng-container *ngIf="(searchValue$ | async).length && showAutoComplete">
                         <mat-option *ngFor="let word of autocompleteWords$ | async" [value]="word">
                             {{ word }}
                         </mat-option>
@@ -44,6 +44,7 @@
             <button
                 mat-button
                 (click)="search()"
+                class="mat-primary"
             >
                 Search!
             </button>
