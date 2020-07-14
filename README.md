@@ -6,3 +6,15 @@ Slingin' sonnets?  Accessing antonyms?  Just can't think of that one word!??!?! 
 - `git clone` this repository
 - `ng serve`
 - Make haste!
+
+
+## For recruiters!
+
+This project uses the following front-end technologies:
+- Angular 10
+- TypeScript
+- RxJS
+- HTML
+- CSS/Sass
+- Angular Material 10
+- Bootstrap 4
