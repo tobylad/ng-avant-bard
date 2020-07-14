@@ -14,6 +14,7 @@ export class SearchComponent implements OnInit {
 	public noMatches: boolean = false;
 	public showAutoComplete: boolean = true;
 	
+	
 	public categorySubject$: BehaviorSubject<string> = new BehaviorSubject<string>("");
 	public category$: Observable<string> = this.categorySubject$.asObservable();
 	public searchValueSubject$: BehaviorSubject<string> = new BehaviorSubject<string>("");

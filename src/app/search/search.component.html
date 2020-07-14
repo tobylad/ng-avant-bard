@@ -1,67 +1,72 @@
-<!-- Category Cards -->
-<div class="row">
-    <div
-        class="col-lg-3 col-12"
-        *ngFor="let category of categories"
-    >
-        <category-card
-            categoryName={{category}}
-            (click)="setCategory(category)"
-            [isActive]="category === (category$ | async)"
+<div class="container-fluid">
+    <!-- Category Cards -->
+    <div class="row">
+        <div
+            class="col-lg-3 col-12"
+            *ngFor="let category of categories"
         >
-        </category-card>
+            <category-card
+                categoryName={{category}}
+                (click)="setCategory(category)"
+                [isActive]="category === (category$ | async)"
+            >
+            </category-card>
+        </div>
+    </div>
+
+    <!-- Search bar -->
+    <ng-container
+        *ngIf="category$ | async; else noCategory"
+    >
+        <div class="row">
+            <div class="col-lg-4 offset-lg-4 col-10 offset-2 input">
+                <mat-form-field>
+                    <input
+                        matInput
+                        (input)="setSearchText($event)"
+                        [value]="searchValue$ | async"
+                        [matAutocomplete]="auto"
+                    >
+                    
+                    <mat-autocomplete #auto="matAutocomplete">
+                        <ng-container *ngIf="(searchValue$ | async).length && showAutoComplete">
+                            <mat-option *ngFor="let word of autocompleteWords$ | async" [value]="word">
+                                {{ word }}
+                            </mat-option>
+                        </ng-container>
+                    </mat-autocomplete>
+
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 offset-lg-4 col-10 offset-2 search-button">
+                <button
+                    mat-button
+                    (click)="search()"
+                    class="mat-primary"
+                >
+                    Search!
+                </button>
+            </div>
+        </div>
+    </ng-container>
+
+    <results 
+        *ngIf="searchedValue"
+        [items]="results$ | async"
+        [searchedValue]="searchedValue"
+        [searchedCategory]="searchedCategory"
+    ></results>
+
+    <div 
+        *ngIf="noMatches"
+        class="col-lg-4 offset-lg-4 col-10 offset-2 search-button no-results"
+    >
+        There were no results for that word!  Try another one!
     </div>
 </div>
-
-<!-- Search bar -->
-<ng-container
-    *ngIf="category$ | async; else noCategory"
->
-    <div class="row">
-        <div class="col-lg-4 offset-lg-4 col-10 offset-2 input">
-            <mat-form-field>
-                <input
-                    matInput
-                    (input)="setSearchText($event)"
-                    [value]="searchValue$ | async"
-                    [matAutocomplete]="auto"
-                >
-                
-                <mat-autocomplete #auto="matAutocomplete">
-                    <ng-container *ngIf="(searchValue$ | async).length && showAutoComplete">
-                        <mat-option *ngFor="let word of autocompleteWords$ | async" [value]="word">
-                            {{ word }}
-                        </mat-option>
-                    </ng-container>
-                </mat-autocomplete>
-
-            </mat-form-field>
-        </div>
-    </div>
-
-    <div>
-        <div class="col-lg-4 offset-lg-4 col-10 offset-2 search-button">
-            <button
-                mat-button
-                (click)="search()"
-                class="mat-primary"
-            >
-                Search!
-            </button>
-        </div>
-    </div>
-</ng-container>
-
-<ng-container *ngIf="searchedValue">
-    <h2>{{ searchedCategory }} of <strong>{{ searchedValue }}</strong></h2>
-    <results [items]="results$ | async"></results>
-</ng-container>
-
-<ng-container *ngIf="noMatches">
-    <div class="col-lg-4 offset-lg-4 col-10 offset-2 search-button no-results">
-        There were no results for that word!  Try another one!
-     </div>
-</ng-container>
 
 
 <!-- Ng-templates -->

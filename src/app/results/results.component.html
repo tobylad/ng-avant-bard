@@ -1,11 +1,54 @@
-<mat-grid-list 
-    cols="4"
-    rowHeight="50px"
->
-    <mat-grid-tile
-        *ngFor="let result of items"
-    >
-        {{ result.word }}
-    </mat-grid-tile>
+<div class="container-fluid">
+    <div class="row toolbar">
+        <div class="col-10">
+            <h2>{{ searchedCategory }} of <strong>{{ searchedValue }}</strong></h2>
+        </div>
 
-</mat-grid-list>
+        <div 
+            *ngIf="items.length"
+            class="col-2 icons"
+        >
+            <mat-icon
+                title="View as Grid"
+                (click)="setView('grid')"
+            >
+                grid_on
+            </mat-icon>
+
+            <mat-icon
+                title="View as Table"
+                (click)="setView('table')"
+            >
+                list
+            </mat-icon>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <mat-grid-list 
+        *ngIf="view === 'grid'"
+        cols="4"
+        rowHeight="50px"
+    >
+        <mat-grid-tile
+            *ngFor="let result of items"
+        >
+            {{ result.word }}
+        </mat-grid-tile>
+
+    </mat-grid-list>
+
+    <mat-table 
+        *ngIf="view === 'table'"
+        [dataSource]="items"
+    >
+        <ng-container matColumnDef="word">
+            <mat-header-cell *matHeaderCellDef> Word </mat-header-cell>
+            <mat-cell *matCellDef="let result"> {{ result.word }} </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+</div>

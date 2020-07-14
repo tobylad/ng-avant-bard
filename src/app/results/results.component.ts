@@ -7,10 +7,19 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class ResultsComponent implements OnInit {
   @Input() items: any[];
+  @Input() searchedValue: string;
+  @Input() searchedCategory: string;
+
+  public displayedColumns: string[] = ["word"];
+  public view: string = "grid";
 
   constructor() { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
   }
+
+  public setView(viewType: string): void {
+		this.view = viewType;
+	}
 
 }

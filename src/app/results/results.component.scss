@@ -1,0 +1,17 @@
+.toolbar {
+    border-bottom: 2px solid darken(#fff, 5%);
+    margin-bottom: 10px;
+
+    .icons {
+        text-align: right;
+
+        .mat-icon {
+            cursor: pointer;
+            margin-left: 5px;
+
+            &:hover {
+                background-color: darken(#fff, 10%);
+            }
+        }
+    }
+}
