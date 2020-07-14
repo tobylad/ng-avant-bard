@@ -11,7 +11,7 @@ Slingin' sonnets?  Accessing antonyms?  Just can't think of that one word!??!?! 
 ## For recruiters!
 
 This project uses the following front-end technologies (My work experience in parentheses!):
-- Angular 10 (1 year)
+- Angular 10 (1 year experience in Angular 2+)
 - TypeScript (1 year)
 - RxJS (1 year)
 - HTML (3 years)
