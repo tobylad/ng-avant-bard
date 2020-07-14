@@ -10,11 +10,11 @@ Slingin' sonnets?  Accessing antonyms?  Just can't think of that one word!??!?! 
 
 ## For recruiters!
 
-This project uses the following front-end technologies:
-- Angular 10
-- TypeScript
-- RxJS
-- HTML
-- CSS/Sass
-- Angular Material 10
-- Bootstrap 4
+This project uses the following front-end technologies (My work experience in parentheses!):
+- Angular 10 (1 year)
+- TypeScript (1 year)
+- RxJS (1 year)
+- HTML (3 years)
+- CSS/Sass (3 years)
+- Angular Material 10 (new to me this project)
+- Bootstrap 4 (2 years)
