@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { Component, OnInit } from "@angular/core";
+import { BehaviorSubject, Observable } from "rxjs";
+import { first, debounceTime, debounce} from "rxjs/operators";
 
 @Component({
-	selector: 'search',
-	templateUrl: './search.component.html',
-	styleUrls: ['./search.component.scss']
+	selector: "search",
+	templateUrl: "./search.component.html",
+	styleUrls: ["./search.component.scss"]
 })
 
 export class SearchComponent implements OnInit {
-	public searchedValue: string = "";
-	public searchedCategory: string = "";
-	public noMatches: boolean = false;
+	public searchedValue: string;
+	public searchedCategory: string;
+	public noMatches: boolean;
+	public autocompleteActive: boolean;
+	public newSearchStarted: boolean;
 	
 	public categorySubject$: BehaviorSubject<string> = new BehaviorSubject<string>("");
 	public category$: Observable<string> = this.categorySubject$.asObservable();
@@ -32,9 +34,6 @@ export class SearchComponent implements OnInit {
 		"Homophones"
 	];
 
-
-	constructor() { }
-
 	ngOnInit(): void {
 		this.addSearchOnEnter();
 	}
@@ -48,18 +47,37 @@ export class SearchComponent implements OnInit {
 		this.searchedValue = "";
 	}
 
-	public setSearchText($event): void {
+	public async setSearchText($event: any): Promise<void> {
+		if ($event.key === "Enter") {
+			this.autocompleteActive = false;
+		} else {
+			this.newSearchStarted = false;
+			this.autocompleteActive = true;
+		}
+
 		this.noMatches = false;
 		this.searchValueSubject$.next($event.target.value);
-      	this.setAutocompleteOptions();
+
+		this.searchValue$.pipe(
+			debounceTime(200)
+		).subscribe(
+			(value: string) => {
+				console.log('%cval', 'color: lime; font-size: 16px;', value) 
+				this.setAutocompleteOptions(value)
+			}
+		);
 	}
 
 	public async search(): Promise<void> {
+		if (this.newSearchStarted) return;
+
+
 		if (this.isSearchReady) {
 			const queryString = await this.setQuery();
 			const datamuseAPIResults = await fetch(`https://api.datamuse.com/words?rel_${queryString}`);
 			const resultsJSON = await datamuseAPIResults.json();
 			this.resultsSubject$.next(resultsJSON);
+			this.newSearchStarted = true;
 
 			if (!resultsJSON.length) {
 				this.noMatches = true;
@@ -67,7 +85,7 @@ export class SearchComponent implements OnInit {
 		}
 	}
 
-	private isSearchReady() {
+	private get isSearchReady() {
 		return !!this.category$ && !!this.searchValue$;
 	}
 
@@ -88,24 +106,28 @@ export class SearchComponent implements OnInit {
 	}
 
 	private addSearchOnEnter() {
-		document.addEventListener("keyup", ($e) => {
-			if (!!this.category$ && !!this.searchValue$ && $e.keyCode === 13) {
+		document.addEventListener("keyup", ($event: KeyboardEvent) => {
+			if (!!this.category$ && !!this.searchValue$ && $event.key === "Enter") {
 				this.search();
 			}
 		});
 	}
 
-	private async setAutocompleteOptions() {
-		const searchValue = await this.searchValue$.pipe(first()).toPromise();
-		const datamuseAPIResults = await fetch(`https://api.datamuse.com/sug?s=${searchValue}`);
-		const autocompleteResultsJSON = await datamuseAPIResults.json();
-		const options = autocompleteResultsJSON.map((result) => {
-			return result.word;
-        });
-        const filteredOptions = options.filter((option) => {
-            return option.includes(searchValue);
-		});
-		
-		this.autocompleteWordsSubject$.next(filteredOptions);
-    }
+	private async setAutocompleteOptions(searchValue: string): Promise<void> {
+		if (!searchValue) {
+			this.autocompleteWordsSubject$.next([]);
+		} else {
+			const datamuseAPIResults = await fetch(`https://api.datamuse.com/sug?s=${searchValue}`);
+			const autocompleteResultsJSON = await datamuseAPIResults.json();
+			const options = autocompleteResultsJSON.map((result: IAutoCompleteResult) => {
+				return result.word;
+			});
+			const filteredOptions: string[] = options.filter((option: string) => {
+				return option.includes(searchValue);
+			});
+
+			
+			this.autocompleteWordsSubject$.next(filteredOptions);
+		}
+	}
 }

@@ -1,17 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from "@angular/core";
 
 @Component({
-	selector: 'category-card',
-	templateUrl: './category-card.component.html',
-	styleUrls: ['./category-card.component.scss']
+	selector: "category-card",
+	templateUrl: "./category-card.component.html",
+	styleUrls: ["./category-card.component.scss"]
 })
-export class CategoryCardComponent implements OnInit {
+
+export class CategoryCardComponent {
 	@Input() categoryName: string;
 	@Input() isActive: string;
-
-	constructor() { }
-
-	ngOnInit(): void {
-	}
-
 }

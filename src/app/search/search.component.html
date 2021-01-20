@@ -22,13 +22,14 @@
             <mat-form-field>
                 <input
                     matInput
-                    (input)="setSearchText($event)"
                     [value]="searchValue$ | async"
                     [matAutocomplete]="auto"
+                    (input)="setSearchText($event)"
+                    (click)="setSearchText($event)"
                 >
                 
                 <mat-autocomplete #auto="matAutocomplete">
-                    <ng-container *ngIf="searchValue$">
+                    <ng-container *ngIf="autocompleteActive && searchValue$ | async">
                         <mat-option *ngFor="let word of autocompleteWords$ | async" [value]="word">
                             {{ word }}
                         </mat-option>
