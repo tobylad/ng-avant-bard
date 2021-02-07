@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
-import { first, debounceTime, debounce} from "rxjs/operators";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { debounceTime } from "rxjs/operators";
 
 @Component({
 	selector: "search",
@@ -9,125 +9,116 @@ import { first, debounceTime, debounce} from "rxjs/operators";
 })
 
 export class SearchComponent implements OnInit {
-	public searchedValue: string;
-	public searchedCategory: string;
+	public category$: Subject<CategoryCard> = new Subject();
+	public searchValue$: Subject<string> = new Subject<string>();
+	public results$: Subject<DatamuseResult[]> = new Subject<DatamuseResult[]>();
+	public autocompleteWords$: Subject<DatamuseResult[]> = new Subject<DatamuseResult[]>();
+	public currentCategory: CategoryCard = null;
+	public currentSearchValue: string;
+	public currentResults: DatamuseResult[] = [];
+	public currentAutocompleteWords: DatamuseResult[] = [];
+
+	public categories: CategoryCard[] = [
+		{title: "Synonyms", abbv: "syn"},
+		{title: "Antonyms", abbv: "ant"},
+		{title: "Rhymes", abbv: "rhy"},
+		{title: "Homophones", abbv: "hom"}
+	];
+
+	public currentResultsTitle: string;
 	public noMatches: boolean;
 	public autocompleteActive: boolean;
 	public newSearchStarted: boolean;
-	
-	public categorySubject$: BehaviorSubject<string> = new BehaviorSubject<string>("");
-	public category$: Observable<string> = this.categorySubject$.asObservable();
-
-	public searchValueSubject$: BehaviorSubject<string> = new BehaviorSubject<string>("");
-	public searchValue$: Observable<string> = this.searchValueSubject$.asObservable();
-
-	public resultsSubject$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
-	public results$: Observable<string[]> = this.resultsSubject$.asObservable();
-
-	public autocompleteWordsSubject$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
-	public autocompleteWords$: Observable<string[]> = this.autocompleteWordsSubject$.asObservable();
-
-	public categories: string[] = [
-		"Synonyms",
-		"Antonyms",
-		"Rhymes",
-		"Homophones"
-	];
+	public searchReady: boolean;
 
 	ngOnInit(): void {
 		this.addSearchOnEnter();
+
+		this.category$.subscribe((category: CategoryCard) => {
+			this.currentCategory = category
+		});
+
+		this.searchValue$.subscribe((value: string) => {
+			if (value) {
+				this.searchReady = true;
+				this.noMatches = false;
+				this.newSearchStarted = true;
+			} else {
+				this.searchReady = false;
+				this.setAutocompleteOptions("");
+			}
+ 
+			this.currentSearchValue = value
+		});
+
+		this.searchValue$.pipe(
+			debounceTime(500)
+		).subscribe((value: string) => {
+			if (value) {
+				this.setAutocompleteOptions(value);
+			}
+		});
+
+		this.results$.subscribe((results: DatamuseResult[]) => {
+			this.currentResults = results;
+		});
+
+		this.autocompleteWords$.subscribe((words: DatamuseResult[]) => {
+			this.currentAutocompleteWords = words;
+		});
 	}
 
-	public setCategory(category): void {
-		this.categorySubject$.next(category);
-		this.searchValueSubject$.next("");
-		this.resultsSubject$.next([]);
+	public setCategory(categoryToSet: string): void {
+		const newCategory = this.categories.find((cat) => cat.title === categoryToSet);
+		this.category$.next(newCategory);
+		this.searchValue$.next("");
+		this.results$.next([]);
 		this.noMatches = false;
-		this.searchedCategory = "";
-		this.searchedValue = "";
 	}
 
 	public async setSearchText($event: any): Promise<void> {
-		if ($event.key === "Enter") {
-			this.autocompleteActive = false;
-		} else {
-			this.newSearchStarted = false;
-			this.autocompleteActive = true;
-		}
-
-		this.noMatches = false;
-		this.searchValueSubject$.next($event.target.value);
-
-		this.searchValue$.pipe(
-			debounceTime(200)
-		).subscribe(
-			(value: string) => {
-				console.log('%cval', 'color: lime; font-size: 16px;', value) 
-				this.setAutocompleteOptions(value)
-			}
-		);
+		this.searchValue$.next($event.target.value);
 	}
 
 	public async search(): Promise<void> {
-		if (this.newSearchStarted) return;
+		if (!this.newSearchStarted) return;
 
+		const queryString = await this.setQuery();
+		const datamuseAPIResults = await fetch(`https://api.datamuse.com/words?rel_${queryString}`);
+		const resultsJSON = await datamuseAPIResults.json();
+		this.results$.next(resultsJSON);
+		this.currentResultsTitle = this.currentSearchValue;
+		this.newSearchStarted = false;
 
-		if (this.isSearchReady) {
-			const queryString = await this.setQuery();
-			const datamuseAPIResults = await fetch(`https://api.datamuse.com/words?rel_${queryString}`);
-			const resultsJSON = await datamuseAPIResults.json();
-			this.resultsSubject$.next(resultsJSON);
-			this.newSearchStarted = true;
-
-			if (!resultsJSON.length) {
-				this.noMatches = true;
-			}
+		if (!resultsJSON.length) {
+			this.noMatches = true;
 		}
 	}
 
-	private get isSearchReady() {
-		return !!this.category$ && !!this.searchValue$;
-	}
-
-	private async setQuery(): Promise<string> {
-		const categoryFetchMap = {
-			"Synonyms": "syn",
-			"Antonyms": "ant",
-			"Rhymes": "rhy",
-			"Homophones": "hom"
-		}
-
-		const category = await this.category$.pipe(first()).toPromise();
-		const currentSearchValue = await this.searchValue$.pipe(first()).toPromise();
-		this.searchedCategory = category;
-		this.searchedValue = currentSearchValue;
-
-		return categoryFetchMap[category] + "=" + currentSearchValue;
+	private async setQuery(): Promise<any> {
+		const query =  this.currentCategory.abbv + "=" + this.currentSearchValue;
+		return query;
 	}
 
 	private addSearchOnEnter() {
 		document.addEventListener("keyup", ($event: KeyboardEvent) => {
-			if (!!this.category$ && !!this.searchValue$ && $event.key === "Enter") {
+			if (this.searchReady && $event.key === "Enter") {
+				console.log('%c$event', 'color: lime; font-size: 16px;', $event)
 				this.search();
+				this.autocompleteActive = false;
 			}
 		});
 	}
 
 	private async setAutocompleteOptions(searchValue: string): Promise<void> {
 		if (!searchValue) {
-			this.autocompleteWordsSubject$.next([]);
+			this.autocompleteActive = false;
+			this.autocompleteWords$.next([]);
 		} else {
+			this.autocompleteActive = true;
 			const datamuseAPIResults = await fetch(`https://api.datamuse.com/sug?s=${searchValue}`);
 			const autocompleteResultsJSON = await datamuseAPIResults.json();
-			const options = autocompleteResultsJSON.map((result: IAutoCompleteResult) => {
-				return result.word;
-			});
-			const filteredOptions: string[] = options.filter((option: string) => {
-				return option.includes(searchValue);
-			});
-
-			
-			this.autocompleteWordsSubject$.next(filteredOptions);
+			this.autocompleteWords$.next(autocompleteResultsJSON);
 		}
 	}
 }

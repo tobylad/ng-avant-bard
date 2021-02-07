@@ -5,33 +5,32 @@
         *ngFor="let category of categories"
     >
         <category-card
-            categoryName={{category}}
-            (click)="setCategory(category)"
-            [isActive]="category === (category$ | async)"
+            categoryName={{category.title}}
+            (click)="setCategory(category.title)"
+            [isActive]="currentCategory?.title === category.title"
         >
         </category-card>
     </div>
 </div>
 
-<!-- Search bar -->
+<!-- Search bar & autocomplete -->
 <ng-container
-    *ngIf="category$ | async; else noCategory"
+    *ngIf="currentCategory; else noCategory"
 >
     <div class="row">
         <div class="col-lg-4 offset-lg-4 col-10 offset-2 input">
             <mat-form-field>
                 <input
                     matInput
-                    [value]="searchValue$ | async"
+                    [value]="currentSearchValue"
                     [matAutocomplete]="auto"
                     (input)="setSearchText($event)"
-                    (click)="setSearchText($event)"
                 >
                 
                 <mat-autocomplete #auto="matAutocomplete">
-                    <ng-container *ngIf="autocompleteActive && searchValue$ | async">
-                        <mat-option *ngFor="let word of autocompleteWords$ | async" [value]="word">
-                            {{ word }}
+                    <ng-container *ngIf="autocompleteActive && currentSearchValue">
+                        <mat-option *ngFor="let item of currentAutocompleteWords" [value]="item.word">
+                            {{ item.word }}
                         </mat-option>
                     </ng-container>
                 </mat-autocomplete>
@@ -44,6 +43,7 @@
         <div class="col-lg-4 offset-lg-4 col-10 offset-2 search-button">
             <button
                 mat-button
+                [disabled]="!searchReady"
                 (click)="search()"
             >
                 Search!
@@ -52,9 +52,10 @@
     </div>
 </ng-container>
 
-<ng-container *ngIf="searchedValue">
-    <h2>{{ searchedCategory }} of <strong>{{ searchedValue }}</strong></h2>
-    <results [items]="results$ | async"></results>
+<!-- Results -->
+<ng-container *ngIf="currentResults.length > 0">
+    <h2>{{ currentCategory.title }} of <strong>{{ currentResultsTitle }}</strong></h2>
+    <results [items]="currentResults"></results>
 </ng-container>
 
 <ng-container *ngIf="noMatches">

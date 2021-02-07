@@ -6,7 +6,7 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./results.component.scss']
 })
 export class ResultsComponent implements OnInit {
-  @Input() items: any[];
+  @Input() items: DatamuseResult[];
 
   constructor() { }
 
