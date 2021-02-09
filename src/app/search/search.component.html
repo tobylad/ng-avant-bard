@@ -1,7 +1,6 @@
 <!-- Category Cards -->
-<div class="row">
+<div class="categories">
     <div
-        class="col-lg-3 col-12"
         *ngFor="let category of categories"
     >
         <category-card
@@ -14,17 +13,18 @@
 </div>
 
 <!-- Search bar & autocomplete -->
-<ng-container
+<div class="search-wrapper"
     *ngIf="currentCategory; else noCategory"
 >
-    <div class="row">
-        <div class="col-lg-4 offset-lg-4 col-10 offset-2 input">
+    <div class="search">
+        <div class="input">
             <mat-form-field>
                 <input
                     matInput
                     [value]="currentSearchValue"
                     [matAutocomplete]="auto"
                     (input)="setSearchText($event)"
+                    (blur)="setSearchText($event)"
                 >
                 
                 <mat-autocomplete #auto="matAutocomplete">
@@ -39,27 +39,25 @@
         </div>
     </div>
 
-    <div>
-        <div class="col-lg-4 offset-lg-4 col-10 offset-2 search-button">
-            <button
-                mat-button
-                [disabled]="!searchReady"
-                (click)="search()"
-            >
-                Search!
-            </button>
-        </div>
+    <div class="search-button">
+        <button
+            mat-button
+            [disabled]="!searchReady"
+            (click)="search()"
+        >
+            Search!
+        </button>
     </div>
-</ng-container>
+</div>
 
 <!-- Results -->
 <ng-container *ngIf="currentResults.length > 0">
-    <h2>{{ currentCategory.title }} of <strong>{{ currentResultsTitle }}</strong></h2>
+    <h2 class="results-title">{{ currentCategory.title }} of <strong>{{ currentResultsTitle }}</strong></h2>
     <results [results]="currentResults"></results>
 </ng-container>
 
 <ng-container *ngIf="noMatches">
-    <div class="col-lg-4 offset-lg-4 col-10 offset-2 search-button no-results">
+    <div class="no-results">
         There were no results for that word!  Try another one!
      </div>
 </ng-container>

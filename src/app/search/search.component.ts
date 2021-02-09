@@ -55,7 +55,7 @@ export class SearchComponent implements OnInit {
 		});
 
 		this.searchValue$.pipe(
-			debounceTime(500)
+			debounceTime(250)
 		).subscribe((value: string) => {
 			if (value) {
 				this.setAutocompleteOptions(value);

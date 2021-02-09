@@ -1,6 +1,7 @@
 .category-card {
     height: 150px;
-    margin-bottom: 20px;
+    width: 250px;
+    margin: 0 auto 20px;
     padding: 0;
 
     .category-button {
@@ -12,5 +13,11 @@
         &--active {
             background-color: #b4da55;
         }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .category-card {
+        width: 90%;
     }
 }
