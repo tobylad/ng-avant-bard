@@ -3,11 +3,13 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from "@angular/forms";
 
 // Angular Material Imports
+import {ClipboardModule} from '@angular/cdk/clipboard';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 
 // Components
@@ -27,11 +29,13 @@ import { ResultsComponent } from './results/results.component';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    ClipboardModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
     MatGridListModule,
+    MatIconModule,
     MatInputModule,
     ReactiveFormsModule
   ],
