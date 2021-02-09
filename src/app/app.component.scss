@@ -1,19 +1,29 @@
 .app {
-    margin: 20px;
+    margin: 20px 0;
 
     .title {
-        margin-bottom: 20px;
         padding: 20px;
+        margin: 0;
         text-align: center;
 
         h1 {
             font-family: "Montserrat", sans-serif;
             font-size: 48px;
+            margin: 0;
         }
 
         h1:hover {
             cursor: pointer;
             text-decoration: underline;
+        }
+    }
+
+    .title-image {
+        display: grid;
+
+        img {
+            margin: 0 auto 10px;
+            width: 200px;
         }
     }
 }
