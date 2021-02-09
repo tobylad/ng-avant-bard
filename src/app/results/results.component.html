@@ -1,11 +1,39 @@
+<div class="sort-copy">
+    <button class="sort" (click)="sortAbc()">
+        <img 
+            alt="Sort Alphabetically"
+            src="assets/images/alpha-sort.svg" 
+            title="Sort Alphabetically"
+        /> 
+    </button>
+
+    <button class="sort" (click)="sortByLength()">
+        <img 
+            alt="Sort by Length" 
+            src="assets/images/sort.svg" 
+            title="Sort by Length" 
+        />
+    </button>
+
+    <span 
+        *ngIf="!!copyMessage"
+        class="copy-message"
+        [innerHTML]="copyMessage"
+    >
+    </span>
+</div>
+
 <mat-grid-list 
     cols="4"
     rowHeight="50px"
 >
     <mat-grid-tile
-        *ngFor="let result of items"
+        *ngFor="let result of displayedResults"
+        [cdkCopyToClipboard]="result"
+        (mouseenter)="updateCopyMessage(result)"
+        (mouseleave)="updateCopyMessage('')"
+        (click)="updateCopyMessage('copied')"
     >
-        {{ result.word }}
+        {{ result }}
     </mat-grid-tile>
-
 </mat-grid-list>

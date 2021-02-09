@@ -1,0 +1,30 @@
+mat-grid-tile {
+    background: #c0e071;
+    color: #4a5f15;
+}
+
+mat-grid-tile:hover {
+    cursor:pointer;
+    font-weight: bold;
+}
+
+div.sort-copy {
+    margin: 0 0 10px;
+
+    button.sort {
+        background: transparent;
+        border: none;
+        outline-color: #b4da55;
+        padding: 0;
+    
+        img {
+            margin: 0 3px;
+        }
+    }
+    
+    span.copy-message {
+        color: #4a5f15;
+        font-style: italic;
+        margin: 0 5px;
+    }
+}
