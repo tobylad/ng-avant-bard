@@ -8,10 +8,10 @@ Slingin' sonnets?  Accessing antonyms?  Just can't think of that one word!??!?! 
 - Make haste!
 
 ## How to use:
-- Click a category from the category list (i.e. 'Synonyms')
-- Type a word in the search input (i.e. 'bear')
-- Click search (or press enter!) to find words related to yours based on the category selected
-- Click a word to copy it to your clipboard and use it wherever you please!
+1. Click a category from the category list (i.e. 'Synonyms')
+2. Type a word in the search input (i.e. 'bear')
+3. Click search (or press enter!) to find words related to yours based on the category selected
+4. Click a word to copy it to your clipboard and use it wherever you please!
 
 ### What was used in this project?
 - Angular 10
