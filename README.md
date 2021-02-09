@@ -10,8 +10,8 @@ Slingin' sonnets?  Accessing antonyms?  Just can't think of that one word!??!?! 
 ### What was used in this project?
 - Angular 10
 - Angular Material UI
-- Bootstrap.css
-- CSS/SCSS
+- CSS Grid
+- SCSS
 - HTML
 - RxJS
 - TypeScript
