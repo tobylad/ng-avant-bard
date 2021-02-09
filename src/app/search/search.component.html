@@ -55,7 +55,7 @@
 <!-- Results -->
 <ng-container *ngIf="currentResults.length > 0">
     <h2>{{ currentCategory.title }} of <strong>{{ currentResultsTitle }}</strong></h2>
-    <results [items]="currentResults"></results>
+    <results [results]="currentResults"></results>
 </ng-container>
 
 <ng-container *ngIf="noMatches">
@@ -67,7 +67,9 @@
 
 <!-- Ng-templates -->
 <ng-template #noCategory>
-    <div class="col-lg-4 offset-lg-4 col-10 offset-2 search-button choose-category">
-       Choose a category!
+    <div class="choose-category">
+        <div class="choose-category__message">
+            Choose a category!
+        </div>
     </div>
 </ng-template>

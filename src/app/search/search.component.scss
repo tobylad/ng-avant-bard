@@ -8,10 +8,11 @@
 }
 
 .no-results {
-    color: red;
+    color: #FF0000;
     margin-top: 20px;
 }
 
 .choose-category {
-    margin-top: 20px;
+    display: grid;
+    &__message { margin: 20px auto; }
 }

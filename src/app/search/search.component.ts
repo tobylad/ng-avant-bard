@@ -1,5 +1,6 @@
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject, Observable, Subject } from "rxjs";
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
+import { Subject } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 
 @Component({
@@ -9,27 +10,30 @@ import { debounceTime } from "rxjs/operators";
 })
 
 export class SearchComponent implements OnInit {
-	public category$: Subject<CategoryCard> = new Subject();
-	public searchValue$: Subject<string> = new Subject<string>();
-	public results$: Subject<DatamuseResult[]> = new Subject<DatamuseResult[]>();
-	public autocompleteWords$: Subject<DatamuseResult[]> = new Subject<DatamuseResult[]>();
+	@ViewChild(MatAutocompleteTrigger) autocomplete: MatAutocompleteTrigger;
+
 	public currentCategory: CategoryCard = null;
 	public currentSearchValue: string;
-	public currentResults: DatamuseResult[] = [];
+	public currentResults: string[] = [];
 	public currentAutocompleteWords: DatamuseResult[] = [];
-
+	
 	public categories: CategoryCard[] = [
 		{title: "Synonyms", abbv: "syn"},
 		{title: "Antonyms", abbv: "ant"},
 		{title: "Rhymes", abbv: "rhy"},
 		{title: "Homophones", abbv: "hom"}
 	];
-
+	
 	public currentResultsTitle: string;
 	public noMatches: boolean;
 	public autocompleteActive: boolean;
 	public newSearchStarted: boolean;
 	public searchReady: boolean;
+	
+	private category$: Subject<CategoryCard> = new Subject();
+	private searchValue$: Subject<string> = new Subject<string>();
+	private results$: Subject<DatamuseResult[]> = new Subject<DatamuseResult[]>();
+	private autocompleteWords$: Subject<DatamuseResult[]> = new Subject<DatamuseResult[]>();
 
 	ngOnInit(): void {
 		this.addSearchOnEnter();
@@ -45,7 +49,6 @@ export class SearchComponent implements OnInit {
 				this.newSearchStarted = true;
 			} else {
 				this.searchReady = false;
-				this.setAutocompleteOptions("");
 			}
  
 			this.currentSearchValue = value
@@ -60,7 +63,7 @@ export class SearchComponent implements OnInit {
 		});
 
 		this.results$.subscribe((results: DatamuseResult[]) => {
-			this.currentResults = results;
+			this.currentResults = results.map((result) => result.word);
 		});
 
 		this.autocompleteWords$.subscribe((words: DatamuseResult[]) => {
@@ -93,6 +96,8 @@ export class SearchComponent implements OnInit {
 		if (!resultsJSON.length) {
 			this.noMatches = true;
 		}
+	
+		this.autocomplete.closePanel();
 	}
 
 	private async setQuery(): Promise<any> {
@@ -103,7 +108,6 @@ export class SearchComponent implements OnInit {
 	private addSearchOnEnter() {
 		document.addEventListener("keyup", ($event: KeyboardEvent) => {
 			if (this.searchReady && $event.key === "Enter") {
-				console.log('%c$event', 'color: lime; font-size: 16px;', $event)
 				this.search();
 				this.autocompleteActive = false;
 			}
