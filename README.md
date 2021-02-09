@@ -6,3 +6,13 @@ Slingin' sonnets?  Accessing antonyms?  Just can't think of that one word!??!?! 
 - `git clone` this repository
 - `ng serve`
 - Make haste!
+
+### What was used in this project?
+- Angular 10
+- Angular Material UI
+- Bootstrap.css
+- CSS/SCSS
+- HTML
+- RxJS
+- TypeScript
+- Image fetching via CDN
